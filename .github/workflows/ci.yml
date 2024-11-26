@@ -49,16 +49,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up SSH Key and Add to ssh-agent
+      - name: Set up SSH Key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_PASSPHRASE: ${{ secrets.SSH_PASSPHRASE }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          eval "$(ssh-agent -s)"
-          echo "$SSH_PASSPHRASE" | ssh-add ~/.ssh/id_rsa
+
 
       - name: Verify SSH Connection
         env:
