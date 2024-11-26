@@ -58,16 +58,16 @@ jobs:
 
       - name: Copy to Ubuntu Server
         env:
-          SERVER_IP: ${{ secrets.IP_ADDR }}
-          SERVER_USER: ${{ secrets.SERVER_PASSWORD }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
           sshpass -p "$SERVER_PASSWORD" scp project.zip $SERVER_USER@$SERVER_IP:~/
 
       - name: Run .sh file on Ubuntu Server
         env:
-          SERVER_IP: ${{ secrets.IP_ADDR }}
-          SERVER_USER: ${{ secrets.SERVER_PASSWORD }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
           sshpass -p "$SERVER_PASSWORD" ssh $SERVER_USER@$SERVER_IP <<EOF
