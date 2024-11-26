@@ -47,11 +47,23 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
+
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install sshpass
-        run: sudo apt-get update && sudo apt-get install -y sshpass
+      - name: Set up SSH Key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Verify SSH Connection
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "echo 'SSH connection successful'"
 
       - name: Zip Repository
         run: zip -r project.zip .
@@ -60,17 +72,15 @@ jobs:
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
-          sshpass -p "$SERVER_PASSWORD" scp project.zip $SERVER_USER@$SERVER_IP:~/
+          scp -o StrictHostKeyChecking=no project.zip $SERVER_USER@$SERVER_IP:~/
 
-      - name: Run .sh file on Ubuntu Server
+      - name: Run .sh File on Ubuntu Server
         env:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
         run: |
-          sshpass -p "$SERVER_PASSWORD" ssh $SERVER_USER@$SERVER_IP <<EOF
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP <<EOF
             unzip -o ~/project.zip -d ~/project
             cd ~/project
             chmod +x setup.sh
