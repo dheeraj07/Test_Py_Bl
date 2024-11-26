@@ -81,6 +81,8 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP <<EOF
+            sudo apt-get update
+            sudo apt-get install -y unzip
             unzip -o ~/project.zip -d ~/project
             cd ~/project
             chmod +x setup.sh
