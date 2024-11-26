@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# Update and install dependencies
-sudo apt-get update && sudo apt-get install -y python3 python3-pip unzip
+# Update the package list
+sudo apt-get update
 
-# Install project dependencies (if applicable)
-pip3 install -r requirements.txt
+# Install Python 3 and pip if not already installed
+sudo apt-get install -y python3 python3-pip
+
+# Install the required Python packages system-wide, overriding restrictions
+pip install --break-system-packages -r requirements.txt
